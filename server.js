@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const axios = require('axios');
 const http = require('http');
 const url = require('url');
 const rateLimit = require('express-rate-limit');

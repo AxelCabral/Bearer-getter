@@ -188,7 +188,6 @@ API_TOKEN=seu_token_unico_super_secreto_aqui_123456789
 ```
 
 ### Plataformas Recomendadas
-- **Vercel** - `vercel env add API_TOKEN` (arquivo vercel.json incluído)
 - **Heroku** - `heroku config:set API_TOKEN=seu_token_unico`
 - **Railway** - Configure API_TOKEN via dashboard
 - **Render** - Auto-deploy com .env
@@ -203,25 +202,10 @@ API_TOKEN=seu_token_unico_super_secreto_aqui_123456789
 ### Checklist de Produção
 - [ ] `NODE_ENV=production` configurado
 - [ ] `API_TOKEN` definido com valor único e seguro
-- [ ] SSL/HTTPS habilitado (automático no Vercel)
+- [ ] SSL/HTTPS habilitado
 - [ ] Logs centralizados configurados
 - [ ] Monitoramento ativo
 - [ ] Backup de configurações
 - [ ] Token de API distribuído apenas para usuários autorizados
-
-### Deploy Rápido no Vercel
-```bash
-# 1. Instalar Vercel CLI
-npm i -g vercel
-
-# 2. Deploy
-vercel
-
-# 3. Configurar API_TOKEN
-vercel env add API_TOKEN
-
-# 4. Deploy de produção
-vercel --prod
-```
 
 Certifique-se de definir todas as variáveis de ambiente necessárias. 

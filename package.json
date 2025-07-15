@@ -1,17 +1,18 @@
 {
-  "name": "easy-bearer-auth",
+  "name": "easy-bearer-auth-nextjs",
   "version": "1.0.0",
   "type": "module",
-  "description": "API moderna para autenticação Bearer Token com Sentus",
-  "main": "src/server.js",
+  "description": "API moderna para autenticação Bearer Token com Sentus usando Next.js",
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "start": "node src/server.js",
-    "build": "echo 'Nada para construir neste projeto simples.'"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
+    "next": "^14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "express-rate-limit": "^7.5.0",
     "helmet": "^8.0.0",
     "express-validator": "^7.2.1",
@@ -19,9 +20,12 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "@types/node": "^20.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.4",
+    "typescript": "^5.0.0"
   },
-  "keywords": [],
+  "keywords": ["api", "authentication", "bearer", "nextjs", "security"],
   "author": "",
   "license": "ISC"
 }

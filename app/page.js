@@ -61,7 +61,10 @@ export default function Home() {
           <strong>✓ Status:</strong> API funcionando normalmente
         </p>
         <p style={{ margin: '5px 0 0 0', color: '#166534' }}>
-          <strong>Endpoint de teste:</strong> <a href="/api/test" style={{ color: '#166534' }}>/api/test</a>
+          <strong>Teste básico:</strong> <a href="/api/test" style={{ color: '#166534' }}>/api/test</a>
+        </p>
+        <p style={{ margin: '5px 0 0 0', color: '#166534' }}>
+          <strong>Teste completo:</strong> <a href="/api/test-auth" style={{ color: '#166534' }}>/api/test-auth</a>
         </p>
       </div>
     </div>

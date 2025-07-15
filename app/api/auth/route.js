@@ -36,6 +36,7 @@ async function authenticateWithSentus(user, key) {
   const requestModule = parsedUrl.protocol === 'https:' ? https : http;
 
   console.log(`Enviando requisição para Sentus: ${authUrl}`);
+  console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
 
   return new Promise((resolve, reject) => {
     const options = {
@@ -49,6 +50,14 @@ async function authenticateWithSentus(user, key) {
       },
       timeout: 30000
     };
+
+    console.log('Iniciando requisição HTTP com opções:', {
+      hostname: options.hostname,
+      port: options.port,
+      path: options.path,
+      protocol: parsedUrl.protocol,
+      method: options.method
+    });
 
     const req = requestModule.request(options, (response) => {
       let data = '';
@@ -68,11 +77,18 @@ async function authenticateWithSentus(user, key) {
     });
 
     req.on('error', (error) => {
-      console.error(`Erro na requisição:`, error.message);
+      console.error(`Erro na requisição HTTP:`, {
+        message: error.message,
+        code: error.code,
+        hostname: options.hostname,
+        port: options.port,
+        protocol: parsedUrl.protocol
+      });
       reject(error);
     });
 
     req.on('timeout', () => {
+      console.error('Timeout na requisição HTTP após 30s');
       req.destroy();
       reject(new Error('Timeout na requisição'));
     });
@@ -184,15 +200,17 @@ export async function POST(request) {
   } catch (error) {
     const responseTime = Date.now() - startTime;
     console.error(`Erro na autenticação para IP ${clientIP}: ${error.message} (tempo: ${responseTime}ms)`);
-
-    // Log detalhado para debugging em desenvolvimento
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Stack trace:', error.stack);
-    }
+    console.error('Erro completo:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+      code: error.code
+    });
 
     return NextResponse.json({
       error: 'Erro interno do servidor',
       message: 'Falha na comunicação com o servidor de autenticação',
+      details: process.env.NODE_ENV === 'production' ? undefined : error.message,
       timestamp: new Date().toISOString(),
       responseTime: `${responseTime}ms`
     }, { status: 500 });

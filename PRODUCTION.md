@@ -1,4 +1,4 @@
-# 🚀 Guia de Produção - API Bearer Token
+# Guia de Produção - API Bearer Token
 
 ## Variáveis de Ambiente Obrigatórias
 
@@ -57,9 +57,9 @@ CMD ["npm", "start"]
 ## Monitoramento
 
 ### Logs Importantes
-- Rate limiting: `⚠️  Limite excedido`
-- Token inválido: `🚨 Token de API inválido ou ausente`
-- Ataques: `🚨 Possível tentativa de ataque`
+- Rate limiting: `Limite excedido`
+- Token inválido: `Token de API inválido ou ausente`
+- Ataques: `Possível tentativa de ataque`
 - Performance: `tempo: XXXms`
 
 ### Métricas Recomendadas

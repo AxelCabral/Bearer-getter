@@ -1,25 +1,25 @@
-# 🔐 API Teste HTTP - Autenticação Bearer Token
+# API Teste HTTP - Autenticação Bearer Token
 
 API Node.js **SEGURA PARA PRODUÇÃO** que recebe credenciais de usuário, faz autenticação no servidor Sentus e retorna o Bearer Token.
 
-## 🛡️ Recursos de Segurança
+## Recursos de Segurança
 
-✅ **Rate Limiting** - 100 requisições por 10 minutos por IP  
-✅ **Speed Limiting** - Desacelera requisições consecutivas  
-✅ **Headers de Segurança** - Helmet com CSP, HSTS, etc.  
-✅ **Validação de Entrada** - Sanitização e validação rigorosa  
-✅ **Token de API Único** - Credencial obrigatória para acesso  
-✅ **Logs de Segurança** - Monitoramento de tentativas suspeitas  
-✅ **Proteção contra Ataques** - XSS, injection, etc.  
-✅ **Timeout de Requisições** - Evita bloqueios  
+**Rate Limiting** - 100 requisições por 10 minutos por IP  
+**Speed Limiting** - Desacelera requisições consecutivas  
+**Headers de Segurança** - Helmet com CSP, HSTS, etc.  
+**Validação de Entrada** - Sanitização e validação rigorosa  
+**Token de API Único** - Credencial obrigatória para acesso  
+**Logs de Segurança** - Monitoramento de tentativas suspeitas  
+**Proteção contra Ataques** - XSS, injection, etc.  
+**Timeout de Requisições** - Evita bloqueios  
 
-## 📦 Instalação
+## Instalação
 
 ```bash
 npm install
 ```
 
-## ⚙️ Configuração
+## Configuração
 
 ### Variáveis de Ambiente (Produção)
 Copie o arquivo `.env.example` para `.env` e configure:
@@ -53,13 +53,13 @@ O servidor rodará na porta 3000 (ou na porta definida na variável de ambiente 
 4. **A API extrai** o Bearer Token da resposta do Sentus
 5. **A API retorna** o Bearer Token para você
 
-## 🔑 Token de API Obrigatório
+## Token de API Obrigatório
 
 **IMPORTANTE:** Todas as requisições devem incluir um token de API válido!
 
 Token padrão (para testes): `tkn_b8f2a9e1c5d7h3j9k4m6n2p8q1r5s7t9v2w4x6y8z1`
 
-⚠️ **Em produção:** Configure sua própria chave via variável `API_TOKEN`
+**Em produção:** Configure sua própria chave via variável `API_TOKEN`
 
 ## Endpoints
 
@@ -143,7 +143,7 @@ Basta enviar uma requisição com:
 - **Body JSON**: `{"user": "valor", "key": "valor", "apiToken": "token"}`
 - **OU Headers**: `user: valor`, `key: valor` e `api-token: token`
 
-## 🔒 Recursos de Segurança Detalhados
+## Recursos de Segurança Detalhados
 
 ### Rate Limiting
 - **100 requisições por 10 minutos** por IP
@@ -179,7 +179,7 @@ Basta enviar uma requisição com:
 - Métricas de performance
 - Logs estruturados para análise
 
-## 🚀 Deploy em Produção
+## Deploy em Produção
 
 ### Variáveis Obrigatórias
 ```bash

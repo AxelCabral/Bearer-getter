@@ -203,15 +203,12 @@ app.all('*', validateCredentials, async (req, res) => {
 
     console.log(`📤 Enviando requisição NATIVA para Sentus com headers: user=${user}, key=${key.substring(0,5)}...`);
     
-    // Vamos tentar ambas as URLs e ver qual funciona
-    const httpsUrl = 'https://www.sentus.inf.br/v1000/auth';
-    const httpUrl = 'http://www.sentus.inf.br/v1000/auth';
+    // URL do endpoint - tenta HTTPS primeiro em produção, HTTP em desenvolvimento
+    const authUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://www.sentus.inf.br/v1000/auth'
+      : 'http://www.sentus.inf.br/v1000/auth';
     
-    // Primeiro tentamos detectar se o servidor responde
-    console.log(`🧪 Testando conectividade com servidor Sentus...`);
-    
-    let authUrl = httpsUrl; // Começamos com HTTPS
-    console.log(`🌐 Tentando primeiro: ${authUrl}`);
+    console.log(`🌐 Usando URL: ${authUrl}`);
     
     // Usando HTTP nativo para controle TOTAL da requisição
     const authResponse = await new Promise((resolve, reject) => {
@@ -253,17 +250,6 @@ app.all('*', validateCredentials, async (req, res) => {
       req.on('error', (error) => {
         console.error(`❌ Erro na requisição (${authUrl}):`, error.message);
         console.error(`❌ Código do erro:`, error.code);
-        console.error(`❌ Stack trace:`, error.stack);
-        
-        // Informações detalhadas para debug
-        console.error(`❌ Detalhes do erro:`, {
-          code: error.code,
-          errno: error.errno,
-          syscall: error.syscall,
-          hostname: error.hostname,
-          port: error.port
-        });
-        
         reject(error);
       });
       
@@ -351,49 +337,6 @@ app.all('*', validateCredentials, async (req, res) => {
         timestamp: new Date().toISOString()
       });
     }
-  }
-});
-
-// ====== ENDPOINT DE TESTE PARA DEBUG ======
-app.get('/test-sentus', async (req, res) => {
-  try {
-    console.log(`🧪 Endpoint de teste chamado - testando conectividade com Sentus`);
-    
-    const result = await fetch('https://www.sentus.inf.br/v1000/auth', {
-      method: 'POST',
-      headers: {
-        'user': 'teste@rayalimentos',
-        'key': 'chaveFakeParaTeste123'
-      }
-    });
-
-    const text = await result.text();
-    
-    console.log(`📊 Resultado do teste: Status ${result.status}`);
-    
-    return res.status(200).json({
-      message: 'Teste de conectividade com Sentus',
-      sentusResponse: {
-        status: result.status,
-        headers: Object.fromEntries(result.headers.entries()),
-        body: text
-      },
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (err) {
-    console.error(`❌ Erro no teste:`, err);
-    
-    return res.status(500).json({
-      error: 'Erro no teste de conectividade',
-      details: {
-        message: err.message,
-        stack: err.stack,
-        name: err.name,
-        cause: err.cause
-      },
-      timestamp: new Date().toISOString()
-    });
   }
 });
 

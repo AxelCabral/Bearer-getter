@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request) {
   try {
     // Parâmetros de teste
     const testData = {
@@ -10,10 +10,11 @@ export async function GET() {
     };
 
     // Obtém a URL base da requisição atual
-    const baseUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
-      : 'http://localhost:3000';
+    const url = new URL(request.url);
+    const baseUrl = `${url.protocol}//${url.host}`;
 
+    console.log(`URL atual: ${request.url}`);
+    console.log(`Base URL construída: ${baseUrl}`);
     console.log(`Testando autenticação em: ${baseUrl}/api/auth`);
 
     // Faz requisição para nossa própria API de auth
@@ -30,7 +31,20 @@ export async function GET() {
       })
     });
 
-    const result = await response.json();
+    console.log(`Response status: ${response.status}`);
+    console.log(`Response headers:`, Object.fromEntries(response.headers.entries()));
+    
+    let result;
+    const responseText = await response.text();
+    console.log(`Response text (primeiros 200 chars): ${responseText.substring(0, 200)}`);
+    
+    try {
+      result = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error('Erro ao fazer parse do JSON:', parseError.message);
+      result = { error: 'Resposta não é JSON válido', responseText: responseText.substring(0, 500) };
+    }
+    
     const success = response.ok;
 
     return NextResponse.json({

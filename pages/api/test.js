@@ -3,8 +3,8 @@ export default async function handler(req, res) {
     const result = await fetch('https://www.sentus.inf.br/v1000/auth', {
       method: 'POST',
       headers: {
-        'user': 'dados@rayalimentos',
-        'key': 'QTlbWzGkSrDWCazeEK+bLA=='
+        'user': 'teste@rayalimentos',
+        'key': 'chaveFakeParaTeste123'
       },
       timeout: 7000,
     });
@@ -17,10 +17,10 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     return res.status(500).json({
-      name: err.name,
       message: err.message,
-      code: err.code,
-      stack: err.stack
+      stack: err.stack,
+      name: err.name,
+      cause: err.cause
     });
   }
 } 

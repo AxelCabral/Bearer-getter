@@ -33,6 +33,22 @@ ENABLE_METRICS=true
 
 ## Comandos de Deploy
 
+### Vercel (Recomendado)
+```bash
+# Instalar Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Configurar variáveis de ambiente
+vercel env add API_TOKEN
+# Cole seu token quando solicitado
+
+# Deploy de produção
+vercel --prod
+```
+
 ### Heroku
 ```bash
 heroku config:set NODE_ENV=production

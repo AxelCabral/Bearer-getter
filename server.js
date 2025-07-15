@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const http = require('http');
+const https = require('https');
 const url = require('url');
 const rateLimit = require('express-rate-limit');
 const slowDown = require('express-slow-down');
@@ -84,6 +85,17 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Aplicar rate limiting em todas as rotas
 app.use(authLimiter);
 app.use(speedLimiter);
+
+// ====== ENDPOINT DE TESTE (SEM VALIDAÇÃO) ======
+app.get('/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'API funcionando!',
+    nodeVersion: process.version,
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Token único para autenticação da API (configure via variável de ambiente)
 const API_TOKEN = process.env.API_TOKEN || 'tkn_b8f2a9e1c5d7h3j9k4m6n2p8q1r5s7t9v2w4x6y8z1';
@@ -199,25 +211,31 @@ app.all('*', validateCredentials, async (req, res) => {
 
     console.log(`🔐 Fazendo autenticação para user: ${user}`);
 
-    console.log(`📤 Enviando requisição NATIVA para Sentus com headers: user=${user}, key=${key.substring(0,5)}...`);
+    console.log(`📤 Enviando requisição para Sentus: user=${user}`);
     
-    // Usando HTTP nativo para controle TOTAL da requisição
+    // Determina URL e módulo baseado no ambiente
+    const isProduction = process.env.NODE_ENV === 'production';
+    const authUrl = isProduction ? 'https://www.sentus.inf.br/v1000/auth' : 'http://www.sentus.inf.br/v1000/auth';
+    const parsedUrl = url.parse(authUrl);
+    const requestModule = parsedUrl.protocol === 'https:' ? https : http;
+    
+    console.log(`🌐 Usando: ${authUrl}`);
+    
+    // Usando HTTP/HTTPS nativo
     const authResponse = await new Promise((resolve, reject) => {
-      const parsedUrl = url.parse('http://www.sentus.inf.br/v1000/auth');
-      
       const options = {
         hostname: parsedUrl.hostname,
-        port: parsedUrl.port || 80,
+        port: parsedUrl.port || (parsedUrl.protocol === 'https:' ? 443 : 80),
         path: parsedUrl.path,
         method: 'POST',
         headers: {
           'user': user,
           'key': key
-          // APENAS esses dois headers, NADA mais
-        }
+        },
+        timeout: 10000
       };
       
-      const req = http.request(options, (response) => {
+      const req = requestModule.request(options, (response) => {
         let data = '';
         
         response.on('data', (chunk) => {
@@ -237,16 +255,15 @@ app.all('*', validateCredentials, async (req, res) => {
       });
       
       req.on('error', (error) => {
-        console.error(`❌ Erro na requisição HTTP:`, error);
+        console.error(`❌ Erro na requisição:`, error.message);
         reject(error);
       });
       
-      req.setTimeout(10000, () => {
+      req.on('timeout', () => {
         req.destroy();
-        reject(new Error('Timeout'));
+        reject(new Error('Timeout na requisição'));
       });
       
-      // Não enviamos NENHUM body
       req.end();
     });
 

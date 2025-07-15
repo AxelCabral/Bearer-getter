@@ -1,13 +1,13 @@
-const express = require('express');
-const cors = require('cors');
-const http = require('http');
-const https = require('https');
-const url = require('url');
-const rateLimit = require('express-rate-limit');
-const slowDown = require('express-slow-down');
-const helmet = require('helmet');
-const { body, validationResult } = require('express-validator');
-const morgan = require('morgan');
+import express from 'express';
+import cors from 'cors';
+import http from 'http';
+import https from 'https';
+import url from 'url';
+import rateLimit from 'express-rate-limit';
+import slowDown from 'express-slow-down';
+import helmet from 'helmet';
+import { body, validationResult } from 'express-validator';
+import morgan from 'morgan';
 
 const app = express();
 const PORT = process.env.PORT || 3000;

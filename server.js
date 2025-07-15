@@ -137,8 +137,7 @@ function validateCredentialFormat(user, key, apiToken) {
 }
 
 // Endpoint principal que recebe credenciais e retorna Bearer Token
-// EXCLUINDO rotas /api/* para não interferir com Vercel API routes
-app.all(/^(?!\/api\/).*/, validateCredentials, async (req, res) => {
+app.all('*', validateCredentials, async (req, res) => {
   const startTime = Date.now();
   const clientIP = req.ip || req.connection.remoteAddress;
   const userAgent = req.get('User-Agent') || 'unknown';

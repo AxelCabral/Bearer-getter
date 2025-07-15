@@ -87,50 +87,6 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(authLimiter);
 app.use(speedLimiter);
 
-// ====== ENDPOINT DE TESTE ISOLADO (SEM VALIDAÇÃO) ======
-app.get('/api/test', async (req, res) => {
-  try {
-    console.log(`🧪 Endpoint de teste /api/test chamado - testando Sentus diretamente`);
-    
-    const result = await fetch('https://www.sentus.inf.br/v1000/auth', {
-      method: 'POST',
-      headers: {
-        'user': 'dados@rayalimentos',
-        'key': 'QTlbWzGkSrDWCazeEK+bLA=='
-      }
-    });
-
-    const text = await result.text();
-    
-    console.log(`📊 Resultado do teste: Status ${result.status}`);
-    
-    return res.status(200).json({
-      message: 'Teste isolado de conectividade com Sentus',
-      success: result.status === 200,
-      sentusResponse: {
-        status: result.status,
-        headers: Object.fromEntries(result.headers.entries()),
-        body: text
-      },
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (err) {
-    console.error(`❌ Erro no teste isolado:`, err);
-    
-    return res.status(500).json({
-      error: 'Erro no teste de conectividade',
-      details: {
-        name: err.name,
-        message: err.message,
-        code: err.code,
-        stack: err.stack
-      },
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
 // Token único para autenticação da API (configure via variável de ambiente)
 const API_TOKEN = process.env.API_TOKEN || 'tkn_b8f2a9e1c5d7h3j9k4m6n2p8q1r5s7t9v2w4x6y8z1';
 

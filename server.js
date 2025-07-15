@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 const http = require('http');
-const https = require('https');
 const url = require('url');
 const rateLimit = require('express-rate-limit');
 const slowDown = require('express-slow-down');
@@ -203,20 +202,13 @@ app.all('*', validateCredentials, async (req, res) => {
 
     console.log(`📤 Enviando requisição NATIVA para Sentus com headers: user=${user}, key=${key.substring(0,5)}...`);
     
-    // URL do endpoint - tenta HTTPS primeiro em produção, HTTP em desenvolvimento
-    const authUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://www.sentus.inf.br/v1000/auth'
-      : 'http://www.sentus.inf.br/v1000/auth';
-    
-    console.log(`🌐 Usando URL: ${authUrl}`);
-    
     // Usando HTTP nativo para controle TOTAL da requisição
     const authResponse = await new Promise((resolve, reject) => {
-      const parsedUrl = url.parse(authUrl);
+      const parsedUrl = url.parse('http://www.sentus.inf.br/v1000/auth');
       
       const options = {
         hostname: parsedUrl.hostname,
-        port: parsedUrl.port || (parsedUrl.protocol === 'https:' ? 443 : 80),
+        port: parsedUrl.port || 80,
         path: parsedUrl.path,
         method: 'POST',
         headers: {
@@ -226,9 +218,7 @@ app.all('*', validateCredentials, async (req, res) => {
         }
       };
       
-      // Usa https ou http baseado na URL
-      const requestModule = parsedUrl.protocol === 'https:' ? https : http;
-      const req = requestModule.request(options, (response) => {
+      const req = http.request(options, (response) => {
         let data = '';
         
         response.on('data', (chunk) => {
@@ -248,8 +238,7 @@ app.all('*', validateCredentials, async (req, res) => {
       });
       
       req.on('error', (error) => {
-        console.error(`❌ Erro na requisição (${authUrl}):`, error.message);
-        console.error(`❌ Código do erro:`, error.code);
+        console.error(`❌ Erro na requisição HTTP:`, error);
         reject(error);
       });
       

@@ -67,7 +67,7 @@ export default function Home() {
           <strong>Teste completo:</strong> <a href="/api/test-auth" style={{ color: '#166534' }}>/api/test-auth</a>
         </p>
         <p style={{ margin: '5px 0 0 0', color: '#166534' }}>
-          <strong>Teste HTTP direto:</strong> <a href="/api/test-http" style={{ color: '#166534' }}>/api/test-http</a>
+          <strong>Teste CURL:</strong> <a href="/api/test-curl" style={{ color: '#166534' }}>/api/test-curl</a>
         </p>
       </div>
     </div>

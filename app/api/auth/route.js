@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import http from 'http';
 import https from 'https';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
+const execAsync = promisify(exec);
 
 // Configurações da API
 const API_TOKEN = process.env.API_TOKEN || 'tkn_b8f2a9e1c5d7h3j9k4m6n2p8q1r5s7t9v2w4x6y8z1';
@@ -28,15 +32,62 @@ function checkForSuspiciousContent(user, key, apiToken) {
   return suspiciousPatterns.some(pattern => content.includes(pattern));
 }
 
-// Função para fazer requisição ao Sentus
+// Função para fazer requisição ao Sentus usando curl em produção
 async function authenticateWithSentus(user, key) {
   const isProduction = process.env.NODE_ENV === 'production';
   const authUrl = isProduction ? 'https://www.sentus.inf.br/v1000/auth' : 'http://www.sentus.inf.br/v1000/auth';
-  const parsedUrl = new URL(authUrl);
-  const requestModule = parsedUrl.protocol === 'https:' ? https : http;
 
   console.log(`Enviando requisição para Sentus: ${authUrl}`);
   console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Método: ${isProduction ? 'CURL' : 'Node.js HTTP'}`);
+
+  if (isProduction) {
+    // Em produção: usar curl para contornar limitações do Vercel
+    return await authenticateWithCurl(authUrl, user, key);
+  } else {
+    // Em desenvolvimento: usar Node.js HTTP nativo
+    return await authenticateWithNodeJS(authUrl, user, key);
+  }
+}
+
+// Função de autenticação usando curl (produção)
+async function authenticateWithCurl(authUrl, user, key) {
+  const curlCommand = `curl -X POST "${authUrl}" ` +
+    `-H "user: ${user}" ` +
+    `-H "key: ${key}" ` +
+    `--connect-timeout 15 ` +
+    `--max-time 30 ` +
+    `-v -s`;
+
+  console.log(`Executando curl: ${curlCommand}`);
+
+  const { stdout, stderr } = await execAsync(curlCommand);
+  
+  console.log(`Curl stdout: ${stdout}`);
+  console.log(`Curl stderr: ${stderr}`);
+
+  // Extrair headers do stderr (curl -v output)
+  const authHeaderMatch = stderr.match(/< authorization:\s*(.+)/i);
+  const authHeader = authHeaderMatch ? authHeaderMatch[1].trim() : null;
+
+  // Simular resposta similar ao Node.js HTTP
+  if (authHeader) {
+    return {
+      status: 200,
+      headers: {
+        authorization: authHeader
+      },
+      data: stdout
+    };
+  } else {
+    throw new Error('Token de autorização não encontrado na resposta do curl');
+  }
+}
+
+// Função de autenticação usando Node.js HTTP (desenvolvimento)
+async function authenticateWithNodeJS(authUrl, user, key) {
+  const parsedUrl = new URL(authUrl);
+  const requestModule = parsedUrl.protocol === 'https:' ? https : http;
 
   return new Promise((resolve, reject) => {
     const options = {
@@ -48,7 +99,7 @@ async function authenticateWithSentus(user, key) {
         'user': user,
         'key': key
       },
-      timeout: 30000
+      timeout: 15000 // 15s timeout - mais conservador
     };
 
     console.log('Iniciando requisição HTTP com opções:', {

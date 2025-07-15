@@ -69,6 +69,18 @@ export default function Home() {
         <p style={{ margin: '5px 0 0 0', color: '#166534' }}>
           <strong>Teste CURL:</strong> <a href="/api/test-curl" style={{ color: '#166534' }}>/api/test-curl</a>
         </p>
+        <p style={{ margin: '5px 0 0 0', color: '#166534' }}>
+          <strong>Teste simples:</strong> <a href="/api/test-simple" style={{ color: '#166534' }}>/api/test-simple</a>
+        </p>
+        <p style={{ margin: '5px 0 0 0', color: '#166534' }}>
+          <strong>Teste direto:</strong> <a href="/test-direct" style={{ color: '#166534' }}>/test-direct</a> (sem middleware)
+        </p>
+        <p style={{ margin: '5px 0 0 0', color: '#166534' }}>
+          <strong>Teste HTTPS:</strong> <a href="/api/test-https" style={{ color: '#166534' }}>/api/test-https</a>
+        </p>
+        <p style={{ margin: '5px 0 0 0', color: '#166534' }}>
+          <strong>Teste conectividade:</strong> <a href="/api/test-external" style={{ color: '#166534' }}>/api/test-external</a>
+        </p>
       </div>
     </div>
   );
